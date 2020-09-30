@@ -10,7 +10,8 @@ To add actions, separate them with a ; (semi-colon)
 
 The shortcut has to be valid, following this convention: <https://doc.qt.io/archives/qt-4.8/qshortcut.html#key-prop>
 
-Note that your defined shortcuts will appear automatically, without having to run the plugin. You should only have to run the plugin to add new shortcuts.
+**THIS IS NOT THE CASE BECAUSE OF THIS BUG: <https://musescore.org/en/node/311135#comment-1030086>**
+*Note that your defined shortcuts will appear automatically, without having to run the plugin. You should only have to run the plugin to add new shortcuts.*
 
 ## Installation
 
