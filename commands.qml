@@ -31,6 +31,7 @@ MuseScore {
             id : settings
             category : "plugin.commands.settings"
             property string metrics : ""
+            // default commands
             property string commands : '[{"shortcut":"Ctrl+Alt+V","commands":"paste;reset-groupings;"},{"shortcut":"Ctrl+Shift+Backspace","commands":"select-similar;delete"},{"shortcut":"","commands":""}]'
         }
 
@@ -88,6 +89,18 @@ MuseScore {
                         text: "remove"
                         onClicked: {
                             myModel.remove(index, 1)
+                        }
+                    }
+                    Shortcut {
+                        sequence: shortcut
+                        context: Qt.ApplicationShortcut
+                        // enabled: window.visible
+                        onActivated: {
+                            startCmd()
+                            commands.split(';').forEach(function (command) {
+                                cmd(command)
+                            });
+                            endCmd()
                         }
                     }
                 }
