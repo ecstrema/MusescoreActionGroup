@@ -7,11 +7,10 @@ import MuseScore 3.0
 import Qt.labs.settings 1.0
 
 MuseScore {
-    menuPath : "Plugins.Sequence"
+    menuPath : "Plugins.ActionGroup"
     version : "1.0"
     description : qsTr("Configure shortcuts for sequences of commands")
     requiresScore: false
-
 
     onRun : {
         window.visible = true
@@ -23,9 +22,9 @@ MuseScore {
         minimumWidth : 300
         minimumHeight : 50
         height : 300
-        visible : false
+        visible : true
         color : "#333333"
-        title: "Musescore Commands Binder"
+        title: "Musescore Action Group"
 
         Settings {
             id : settings
@@ -62,7 +61,6 @@ MuseScore {
                     function fromObject(obj) {
                         myModel.clear()
                         obj.forEach(function (ch) {
-                            console.log("this", JSON.stringify(ch))
                             myModel.append( { "commands": ch.commands, "shortcut": ch.shortcut })
                         });
                     }
@@ -96,6 +94,7 @@ MuseScore {
                         context: Qt.ApplicationShortcut
                         // enabled: window.visible
                         onActivated: {
+                            console.log("command to run: " + commands)
                             curScore.startCmd()
                             commands.split(';').forEach(function (command) {
                                 cmd(command)
