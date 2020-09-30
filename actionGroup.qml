@@ -24,14 +24,14 @@ MuseScore {
         height : 300
         visible : true
         color : "#333333"
-        title: "Musescore Action Group"
+        title: qsTr("Musescore Action Group")
 
         Settings {
             id : settings
             category : "plugin.commands.settings"
             property string metrics : ""
             // default commands
-            property string commands : '[{"shortcut":"Ctrl+Alt+Shift+V","commands":"paste;reset-groupings;"},{"shortcut":"Ctrl+Shift+Alt+Backspace","commands":"select-similar;delete"},{"shortcut":"","commands":""}]'
+            property string commands : '[{"commands":"paste;reset-groupings","shortcut":"Ctrl+Alt+Shift+V"},{"commands":"add-marcato;add-sforzato","shortcut":"|"},{"commands":"select-similar;delete","shortcut":"Ctrl+Shift+Alt+Backspace"},{"commands":"toggle-palette;inspector","shortcut":"Shift+F8"},{"commands":"","shortcut":""}]'
         }
 
         ColumnLayout {
@@ -50,7 +50,7 @@ MuseScore {
                 model: ListModel {
                     id: myModel
 
-                    function dataModel() {
+                    function data() {
                         var dm = []
                         for (var i = 0; i < myModel.count; ++i) {
                             dm.push(myModel.get(i))
@@ -58,7 +58,18 @@ MuseScore {
 
                         return dm
                     }
-                    function fromObject(obj) {
+                    function fromString(str) {
+                        try {
+                            var obj = JSON.parse(str)
+                        }
+                        catch (e) {
+                            console.log("invalid JSON")
+                            obj = [ { shortcut: "", commands: ""} ]
+                        }
+                        if (!obj) {
+                            console.log("invalid JSON")
+                            obj = [ { shortcut: "", commands: ""} ]
+                        }
                         myModel.clear()
                         obj.forEach(function (ch) {
                             myModel.append( { "commands": ch.commands, "shortcut": ch.shortcut })
@@ -84,10 +95,8 @@ MuseScore {
                         onTextChanged: myModel.setProperty(index, "shortcut", text)
                     }
                     Button {
-                        text: "remove"
-                        onClicked: {
-                            myModel.remove(index, 1)
-                        }
+                        text: qsTr("Delete")
+                        onClicked: myModel.remove(index, 1)
                     }
                     Shortcut {
                         sequence: shortcut
@@ -97,42 +106,89 @@ MuseScore {
                             console.log("command to run: " + commands)
                             curScore.startCmd()
                             commands.split(';').forEach(function (command) {
-                                cmd(command)
+                                cmd(command.trim())
                             });
                             curScore.endCmd()
                         }
                     }
+
                 }
             }
             Rectangle {
                 height: 1
                 Layout.fillWidth: true
-                color: "white"
+                color: "#666"
             }
             RowLayout {
                 Button {
-                    text: "add"
+                    text: qsTr("New")
                     onClicked: myModel.append( { "commands": "", "shortcut": "" })
+                    Shortcut {
+                        sequence: "Ctrl+N"
+                        onActivated: myModel.append( { "commands": "", "shortcut": "" })
+                    }
                 }
                 Rectangle {
                     Layout.fillWidth: true
                 }
 
                 Button {
-                    text: "?"
+                    text: qsTr("Available commands...")
+                    Shortcut {
+                        sequence: "F1"
+                        onActivated: myModel.append( { "commands": "", "shortcut": "" })
+                    }
                     onClicked: Qt.openUrlExternally("https://github.com/Marr11317/MuseScoreCmdGenerator/blob/master/All.txt");
                 }
             }
 
-            Rectangle {
-                Layout.fillHeight: true
-                // Layout.fillWidth: true
+            TextArea {
+                id: summary
 
-                // color: "#666"
-                // MouseArea {
-                //     anchors.fill: parent
-                //     onClicked: console.log(JSON.stringify(myModel.dataModel()))
-                // }
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                visible: false
+
+                onTextChanged: {
+                    console.log("text changed")
+                    if (visible)
+                        myModel.fromString(text)
+                }
+                Shortcut {
+                    sequence: "Shift+F1"
+                    onActivated: {
+                        summary.visible = false
+                        bottomFillRectangle.visible = true
+                    }
+                }
+                Button {
+                    anchors {
+                        bottom: parent.bottom
+                        right: parent.right
+                        bottomMargin: 4
+                        rightMargin: 4
+                    }
+                    text: qsTr("Hide")
+                    onClicked: {
+                        summary.visible = false
+                        bottomFillRectangle.visible = true
+                    }
+                }
+            }
+
+            Rectangle {
+                id: bottomFillRectangle
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+
+                color: "#333"
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        summary.visible = true
+                        bottomFillRectangle.visible = false
+                    }
+                }
             }
         }
 
@@ -148,8 +204,7 @@ MuseScore {
                 }
                 var commands = settings.commands
                 if (commands) {
-                    commands = JSON.parse(commands)
-                    myModel.fromObject(commands)
+                    myModel.fromString(commands)
                 }
             }
             else {
@@ -161,7 +216,8 @@ MuseScore {
                 }
                 settings.metrics = JSON.stringify(metrics);
 
-                settings.commands = JSON.stringify(myModel.dataModel())
+                settings.commands = JSON.stringify(myModel.data())
+                console.log(settings.commands)
             }
         }
     }
