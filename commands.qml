@@ -32,7 +32,7 @@ MuseScore {
             category : "plugin.commands.settings"
             property string metrics : ""
             // default commands
-            property string commands : '[{"shortcut":"Ctrl+Alt+V","commands":"paste;reset-groupings;"},{"shortcut":"Ctrl+Shift+Backspace","commands":"select-similar;delete"},{"shortcut":"","commands":""}]'
+            property string commands : '[{"shortcut":"Ctrl+Alt+Shift+V","commands":"paste;reset-groupings;"},{"shortcut":"Ctrl+Shift+Alt+Backspace","commands":"select-similar;delete"},{"shortcut":"","commands":""}]'
         }
 
         ColumnLayout {
@@ -96,11 +96,11 @@ MuseScore {
                         context: Qt.ApplicationShortcut
                         // enabled: window.visible
                         onActivated: {
-                            startCmd()
+                            curScore.startCmd()
                             commands.split(';').forEach(function (command) {
                                 cmd(command)
                             });
-                            endCmd()
+                            curScore.endCmd()
                         }
                     }
                 }
