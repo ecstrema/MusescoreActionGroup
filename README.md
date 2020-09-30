@@ -15,7 +15,6 @@ The shortcut has to be valid, following this convention: <https://doc.qt.io/arch
 
 For now, you still have to run at least once the plugin to get access to all your shortcuts. But you can declare a shortcut for that ;)
 
-
 ## Installation
 
 <https://musescore.org/en/handbook/plugins#installation>
