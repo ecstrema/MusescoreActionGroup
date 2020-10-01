@@ -238,6 +238,12 @@ MuseScore {
                 Layout.fillWidth: true
                 visible: false
 
+                onVisibleChanged : {
+                    if (!activeFocus) {
+                        text = JSON.stringify(myModel.data())
+                    }
+                }
+
                 Connections {
                     id: textChangedConnection
                     target: summary
@@ -310,6 +316,12 @@ MuseScore {
                 settings.metrics = JSON.stringify(metrics);
 
                 settings.commands = JSON.stringify(myModel.data())
+            }
+        }
+        Component.onCompleted : {
+            var commands = settings.commands
+            if (commands) {
+                myModel.fromString(commands)
             }
         }
     }
