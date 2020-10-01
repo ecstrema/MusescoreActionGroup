@@ -202,6 +202,12 @@ MuseScore {
                     }
 
                 }
+                Component.onCompleted : {
+                    var commands = settings.commands
+                    if (commands) {
+                        myModel.fromString(commands)
+                    }
+                }
             }
             Rectangle {
                 height: 1
@@ -316,12 +322,6 @@ MuseScore {
                 settings.metrics = JSON.stringify(metrics);
 
                 settings.commands = JSON.stringify(myModel.data())
-            }
-        }
-        Component.onCompleted : {
-            var commands = settings.commands
-            if (commands) {
-                myModel.fromString(commands)
             }
         }
     }

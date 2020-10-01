@@ -12,9 +12,6 @@ The shortcut has to be valid, following this convention: <https://doc.qt.io/arch
 
 There is an experimental shortcut parser, that you can disable by unchecking the `auto` tool button.
 
-**THIS IS NOT THE CASE BECAUSE OF THIS BUG: <https://musescore.org/en/node/311135#comment-1030086>**
-*Note that your defined shortcuts will appear automatically, without having to run the plugin. You should only have to run the plugin to add new shortcuts.*
-
 For now, you still have to run at least once the plugin to get access to all your shortcuts. But you can declare a shortcut for that ;)
 
 ## Installation
