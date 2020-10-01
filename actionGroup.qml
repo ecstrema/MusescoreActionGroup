@@ -50,6 +50,12 @@ MuseScore {
                 model: ListModel {
                     id: myModel
 
+                    function setPropertyAndUpdate(index, property, value, emitter) {
+                        setProperty(index, property, value)
+                        if (emitter.activeFocus)
+                            summary.text = JSON.stringify(data())
+                    }
+
                     function data() {
                         var dm = []
                         for (var i = 0; i < myModel.count; ++i) {
@@ -83,16 +89,16 @@ MuseScore {
                     spacing: 4
 
                     TextField {
-                        placeholderText: qsTr("Enter commands")
+                        placeholderText: qsTr("Commands")
                         Layout.fillWidth: true
                         text: commands
 
-                        onTextChanged: myModel.setProperty(index, "commands", text)
+                        onTextChanged: myModel.setPropertyAndUpdate(index, "commands", text, this)
                     }
                     TextField {
-                        placeholderText: qsTr("Enter Shortcut as text")
+                        placeholderText: qsTr("Shortcut")
                         text: shortcut
-                        onTextChanged: myModel.setProperty(index, "shortcut", text)
+                        onTextChanged: myModel.setPropertyAndUpdate(index, "shortcut", text, this)
                     }
                     Button {
                         text: qsTr("Delete")
@@ -149,10 +155,14 @@ MuseScore {
                 Layout.fillWidth: true
                 visible: false
 
-                onTextChanged: {
-                    console.log("text changed")
-                    if (visible)
-                        myModel.fromString(text)
+                Connections {
+                    id: textChangedConnection
+                    target: summary
+                    onTextChanged: {
+                        if (summary.activeFocus)
+                            myModel.fromString(summary.text)
+                    }
+                    enabled: true
                 }
                 Shortcut {
                     sequence: "Shift+F1"
