@@ -7,7 +7,8 @@ import MuseScore 3.0
 import Qt.labs.settings 1.0
 
 MuseScore {
-    menuPath : "Plugins.ActionChain"
+    id: myPlugin
+    menuPath : "Plugins.Action Chains…"
     version : "1.0"
     description : qsTr("Configure shortcuts for sequences of commands")
     requiresScore: false
@@ -25,23 +26,31 @@ MuseScore {
         }
     }
 
+    Settings {
+        id : settings
+        category : "plugin.commands1.settings"
+        property alias windowx: window.x
+        property alias windowy: window.y
+        property alias windowwidth: window.width
+        property alias windowheight: window.height
+        // property alias popupx: commandsPopup.x
+        // property alias popupy: commandsPopup.y
+        property alias popupwidth: commandsPopup.width
+        property alias popupheight: commandsPopup.height
+        // default sequences
+        property string commands : '[{"commands":"paste;reset-groupings","shortcut":"Ctrl+Alt+Shift+V"},{"commands":"add-marcato;add-sforzato","shortcut":"|"},{"commands":"select-similar;delete","shortcut":"Ctrl+Shift+Alt+Backspace"},{"commands":"toggle-palette;inspector","shortcut":"Shift+F8"},{"commands":"","shortcut":""}]'
+
+    }
+
     Window {
         id : window
-        width : 400;
+        width : 500;
         minimumWidth : 300
         minimumHeight : 50
-        height : 300
+        height : 400
         visible : true
         color : "#333"
-        title: qsTr("Musescore Action Group")
-
-        Settings {
-            id : settings
-            category : "plugin.commands.settings"
-            property string metrics : ""
-            // default commands
-            property string commands : '[{"commands":"paste;reset-groupings","shortcut":"Ctrl+Alt+Shift+V"},{"commands":"add-marcato;add-sforzato","shortcut":"|"},{"commands":"select-similar;delete","shortcut":"Ctrl+Shift+Alt+Backspace"},{"commands":"toggle-palette;inspector","shortcut":"Shift+F8"},{"commands":"","shortcut":""}]'
-        }
+        title: qsTr("Action Chains")
 
         ColumnLayout {
             anchors {
@@ -104,11 +113,23 @@ MuseScore {
                         text: commands
                         selectByMouse: true
 
+                        Rectangle {
+                            anchors.fill: parent
+                            border {
+                                color: "blue"
+                                width: 2
+                            }
+                            color: "transparent"
+                            visible: myPlugin.activeFocusWidget === parent
+                        }
+
                         onTextChanged: myModel.setPropertyAndUpdate(index, "commands", text, this);
 
                         onActiveFocusChanged: {
                             if (activeFocus)
-                                myLoader.cause = this
+                                myPlugin.activeFocusWidget = this
+                            // else if (myPlugin.activeFocusWidget === this)
+                            //     myPlugin.activeFocusWidget = undefined
                         }
 
                     }
@@ -205,7 +226,7 @@ MuseScore {
                             ToolTip.delay: 1000
                             // ToolTip.timeout: 5000
                             ToolTip.visible: hovered
-                            ToolTip.text: qsTr("Wheter this line tries to create shortcut with you keypresses.\nIf disabled, you will be able to enter any key sequence as plain text")
+                            ToolTip.text: qsTr("Whether this line tries to create shortcut with you keypresses.\nIf disabled, you will be able to enter any key sequence as plain text")
                         }
                     }
                     Button {
@@ -238,7 +259,10 @@ MuseScore {
             RowLayout {
                 Button {
                     text: qsTr("New")
-                    onClicked: myModel.append( { "commands": "", "shortcut": "" })
+                    onClicked:  {
+                        myModel.append( { "commands": "", "shortcut": "" })
+                        myPlugin.activeFocusWidget = myRepeater.itemAt(myRepeater.count - 1)
+                    }
                     Shortcut {
                         sequence: "Ctrl+N"
                         onActivated: myModel.append( { "commands": "", "shortcut": "" })
@@ -252,11 +276,13 @@ MuseScore {
 
                 Button {
                     text: qsTr("Available commands...")
+                    checkable: true
                     Shortcut {
                         sequence: "F1"
                         onActivated: myModel.append( { "commands": "", "shortcut": "" })
                     }
-                    onClicked: Qt.openUrlExternally("https://github.com/Marr11317/MuseScoreCmdGenerator/blob/master/All.txt");
+                    // onClicked: Qt.openUrlExternally("https://github.com/Marr11317/MuseScoreCmdGenerator/blob/master/All.txt");
+                    onCheckedChanged: commandsPopup.visible = checked;
                     hoverEnabled: true
                     highlighted: hovered
                 }
@@ -333,94 +359,95 @@ MuseScore {
 
         onVisibleChanged : {
             if (visible) {
-                var metrics = settings.metrics;
-                if (metrics) {
-                    metrics = JSON.parse(metrics);
-                    window.x = metrics.x;
-                    window.y = metrics.y;
-                    window.width = metrics.width;
-                    window.height = metrics.height;
-                }
                 var commands = settings.commands
                 if (commands) {
                     myModel.fromString(commands)
                 }
             }
             else {
-                var metrics = {
-                    x : window.x,
-                    y : window.y,
-                    width : window.width,
-                    height : window.height
-                }
-                settings.metrics = JSON.stringify(metrics);
-
                 settings.commands = JSON.stringify(myModel.data())
+                commandsPopup.visible = false
+            }
+        }
+    }
+    property var activeFocusWidget
+    Window {
+        id: commandsPopup
+        height: 700
+        width: 270
+        visible: false
+        color : "#333"
+        x: window.x + window.width
+        y: window.y + window.height / 2 - height / 2
+
+        title: qsTr("Available commands")
+
+
+        onVisibleChanged : {
+            if (visible) {
+                if (!myPlugin.activeFocusWidget) {
+                    const item = myRepeater.itemAt(0).children[0]
+                    if (item)
+                        myPlugin.activeFocusWidget = item
+                }
             }
         }
 
-        Loader {
-            id: myLoader
-            property var cause
-
-            onCauseChanged: {
-                if (this.status == Loader.Ready) {
-                    this.x = myLoader.cause ? myLoader.cause.x + myLoader.cause.width : 0
-                    this.visible = myLoader.cause ? myLoader.cause.activeFocus : false
-                }
-            }
-
-            onStatusChanged: if (this.status == Loader.Ready) console.log('Loaded')
-            // asynchronous: true
-            sourceComponent: Popup {
-                id: commandsPopup
-                x: 0
-                y: 0
-                clip: true
-                bottomMargin: 10
+        ScrollView {
+            anchors.fill: parent
+            anchors {
+                fill: parent
+                rightMargin: 4
+                leftMargin: 4
                 topMargin: 10
+                bottomMargin: 10
+            }
+            ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+            ColumnLayout {
+                spacing: 4
 
-                visible: false
+                Text {
+                    font.pointSize: 12
+                    color: "white"
+                    text: qsTr('Click to insert into selected field')
+                }
 
-                ScrollView {
-                    anchors.fill: parent
-                    ColumnLayout {
-                        anchors.fill: parent
+                Repeater {
+                    model: availableCommandsModel
+                    RowLayout {
+                        Text {
+                            // width: 10
+                            text: aaaarea.containsMouse ? '< ' : ' <'
+                            color: aaaarea.containsMouse ? 'red': 'white'
+                            font.pointSize: 14
+                            // visible: aaaarea.containsMouse
+                        }
+                        Text {
+                            text: modelData
+                            color: "white"
+                            Layout.fillWidth: true
+                        }
+                        MouseArea {
+                            id: aaaarea
+                            anchors.fill: parent
 
-                        spacing: 4
+                            hoverEnabled: true
 
-                        Repeater {
-                            model: availableCommandsModel
-                            RowLayout {
-                                Text {
-                                    // width: 10
-                                    text: aaaarea.containsMouse ? '< ' : ' <'
-                                    color: aaaarea.containsMouse ? 'red': 'black'
-                                    font.pointSize: 14
-                                    // visible: aaaarea.containsMouse
+                            onClicked: {
+                                if (!myPlugin.activeFocusWidget) {
+                                    const item = myRepeater.itemAt(0).children[0]
+                                    if (item)
+                                        myPlugin.activeFocusWidget = item
                                 }
-                                Text {
-                                    text: modelData
-                                    Layout.fillWidth: true
-                                }
-                                MouseArea {
-                                    id: aaaarea
-                                    anchors.fill: parent
+                                if (!myPlugin.activeFocusWidget)
+                                    return;
+                                var txt = myPlugin.activeFocusWidget.text;
+                                if (txt !== "" && txt[txt.length - 1] != ';')
+                                    txt += ';';
 
-                                    hoverEnabled: true
+                                txt += modelData;
 
-                                    onClicked: {
-                                        if (!myLoader.cause)
-                                            return;
-                                        var txt = myLoader.cause.text;
-                                        if (txt !== "" && txt[txt.length - 1] != ';')
-                                            txt += ';';
-
-                                        txt += modelData;
-
-                                        myLoader.cause.text = txt;
-                                    }
-                                }
+                                myPlugin.activeFocusWidget.text = txt;
                             }
                         }
                     }
