@@ -1,5 +1,5 @@
 import QtQuick 2.9
-import QtQuick.Controls 1.5
+import QtQuick.Controls 2.2
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
 
@@ -7,13 +7,22 @@ import MuseScore 3.0
 import Qt.labs.settings 1.0
 
 MuseScore {
-    menuPath : "Plugins.ActionGroup"
+    menuPath : "Plugins.ActionChain"
     version : "1.0"
     description : qsTr("Configure shortcuts for sequences of commands")
     requiresScore: false
 
+    property variant availableCommandsModel: ["acciaccatura", "add-8va", "add-8vb", "add-brackets", "add-down-bow", "add-hairpin", "add-hairpin-reverse", "add-marcato", "add-noteline", "add-parentheses", "add-remove-breaks", "add-sforzato", "add-slur", "add-staccato", "add-tenuto", "add-trill", "add-up-bow", "advance-1", "advance-16", "advance-2", "advance-32", "advance-4", "advance-64", "advance-8", "advance-breve", "advance-longa", "album", "append-hbox", "append-measure", "append-measures", "append-textframe", "append-vbox", "apply-current-palette-element", "appoggiatura", "auto-beam", "autoplace-enabled", "backspace", "beam-mid", "beam-start", "beam32", "beam64", "bottom-chord", "chord-a", "chord-b", "chord-c", "chord-d", "chord-e", "chord-f", "chord-g", "chord-text", "chord-tie", "clef-bass", "clef-violin", "composer-text", "concert-pitch", "config-raster", "copy", "copy-lyrics-to-clipboard", "countin", "create-new-workspace", "cut", "debugger", "dec-duration-dotted", "del-empty-measures", "delete", "double-duration", "down-chord", "duplet", "edit-element", "edit-harmony", "edit-info", "edit-style", "edit-toolbars", "enh-both", "enh-current", "escape", "explode", "expression-text", "fbeam1", "fbeam2", "figured-bass", "file-close", "file-export", "file-import-pdf", "file-new", "file-open", "file-part-export", "file-save", "file-save-a-copy", "file-save-as", "file-save-online", "file-save-selection", "find", "fingering-text", "first-element", "flat", "flat2", "flip", "follow", "fotomode", "frame-text", "fret-0", "fret-1", "fret-10", "fret-11", "fret-12", "fret-13", "fret-14", "fret-2", "fret-3", "fret-4", "fret-5", "fret-6", "fret-7", "fret-8", "fret-9", "full-measure-rest", "fullscreen", "get-location", "grace16", "grace16after", "grace32", "grace32after", "grace4", "grace8after", "half-duration", "help", "hraster", "implode", "inc-duration-dotted", "insert-a", "insert-b", "insert-c", "insert-d", "insert-e", "insert-f", "insert-fretframe", "insert-g", "insert-hbox", "insert-measure", "insert-measures", "insert-textframe", "insert-vbox", "inspector", "instrument-change-text", "instruments", "interval-2", "interval-3", "interval-4", "interval-5", "interval-6", "interval-7", "interval-8", "interval-9", "interval1", "interval2", "interval3", "interval4", "interval5", "interval6", "interval7", "interval8", "interval9", "join-measures", "key-signatures", "last-element", "layer", "leave-feedback", "load-style", "lock", "loop", "loop-in", "loop-out", "lyrics", "mag", "mark-irregular", "masterpalette", "media", "metronome", "midi-on", "mirror-note", "move-down", "move-left", "move-right", "move-up", "nashville-number-text", "nat", "next-beat-TEXT", "next-chord", "next-element", "next-lyric", "next-measure", "next-measure-TEXT", "next-score", "next-segment-element", "next-track", "no-beam", "no-horizontal-stretch", "no-vertical-stretch", "nonuplet", "note-a", "note-b", "note-breve", "note-breve-TAB", "note-c", "note-d", "note-e", "note-f", "note-g", "note-input", "note-input-realtime-auto", "note-input-realtime-manual", "note-input-repitch", "note-input-rhythm", "note-input-steptime", "note-input-timewise", "note-longa", "note-longa-TAB", "octuplet", "omr", "pad-dot", "pad-dot3", "pad-dot4", "pad-dotdot", "pad-note-1", "pad-note-1-TAB", "pad-note-128", "pad-note-128-TAB", "pad-note-16", "pad-note-16-TAB", "pad-note-2", "pad-note-2-TAB", "pad-note-32", "pad-note-32-TAB", "pad-note-4", "pad-note-4-TAB", "pad-note-64", "pad-note-64-TAB", "pad-note-8", "pad-note-8-TAB", "pad-note-decrease", "pad-note-decrease-TAB", "pad-note-increase", "pad-note-increase-TAB", "pad-rest", "pad-rest-TAB", "page-break", "page-end", "page-next", "page-prev", "page-settings", "page-top", "palette-search", "pan", "part-text", "parts", "paste", "paste-double", "paste-half", "paste-special", "picture", "pitch-down", "pitch-down-diatonic", "pitch-down-octave", "pitch-spell", "pitch-up", "pitch-up-diatonic", "pitch-up-octave", "play", "play-next-chord", "play-next-measure", "play-prev-chord", "play-prev-measure", "plugin-creator", "plugin-manager", "poet-text", "prev-beat-TEXT", "prev-chord", "prev-element", "prev-lyric", "prev-measure", "prev-measure-TEXT", "prev-segment-element", "prev-track", "previous-score", "print", "qml-reload-source", "quadruplet", "quintuplet", "quit", "realtime-advance", "redo", "rehearsalmark-text", "Re-Layout", "Re-layout", "relayout", "repeat", "repeat-cmd", "repeat-sel", "report-bug", "resequence-rehearsal-marks", "reset", "reset-beammode", "reset-groupings", "reset-stretch", "reset-style", "reset-tours", "resource-manager", "rest", "rest-1", "rest-2", "rest-4", "rest-8", "rest-TAB", "revision", "rewind", "roman-numeral-text", "save-style", "scr-next", "scr-prev", "section-break", "seek-begin", "seek-end", "select-all", "select-begin-line", "select-begin-score", "select-dialog", "select-end-line", "select-end-score", "select-next-chord", "select-next-measure", "select-prev-chord", "select-prev-measure", "select-section", "select-similar", "select-similar-range", "select-similar-staff", "select-staff-above", "select-staff-below", "septuplet", "set-visible", "sextuplet", "sharp", "sharp2", "show-bounding-rect", "show-corrupted-measures", "show-frames", "show-invisible", "show-keys", "show-omr", "show-pageborders", "show-segment-shapes", "show-skylines", "show-system-bounding-rect", "show-tours", "show-unprintable", "slash-fill", "slash-rhythm", "split-h", "split-measure", "split-v", "staff-text", "startcenter", "sticking-text", "stretch-less", "stretch-more", "string-above", "string-below", "subtitle-text", "swap", "symbols", "synth-control", "system-break", "system-text", "tempo", "text-b", "text-i", "text-u", "text-word-left", "text-word-right", "tie", "time-delete", "time-signatures", "title-text", "toggle-autoplace", "toggle-concertpitch", "toggle-feedback", "toggle-fileoperations", "toggle-hide-empty", "toggle-imagecapture", "toggle-insert-mode", "toggle-midiimportpanel", "toggle-mixer", "toggle-mmrest", "toggle-navigator", "toggle-noteinput", "toggle-palette", "toggle-piano", "toggle-playpanel", "toggle-scorecmp-tool", "toggle-script-recorder", "toggle-selection-window", "toggle-statusbar", "toggle-timeline", "toggle-transport", "toggle-visible", "toggle-workspaces-toolbar", "top-chord", "transpose", "transpose-down", "transpose-up", "triplet", "tuplet-dialog", "undo", "unroll-repeats", "unset-visible", "up-chord", "viewmode", "voice-1", "voice-2", "voice-3", "voice-4", "voice-x12", "voice-x13", "voice-x14", "voice-x23", "voice-x24", "voice-x34", "vraster", "zoom100", "zoomin", "zoomout", "+"]
+
     onRun : {
         window.visible = true
+    }
+
+    Component.onCompleted : {
+        var commands = settings.commands
+        if (commands) {
+            myModel.fromString(commands)
+        }
     }
 
     Window {
@@ -23,7 +32,7 @@ MuseScore {
         minimumHeight : 50
         height : 300
         visible : true
-        color : "#333333"
+        color : "#333"
         title: qsTr("Musescore Action Group")
 
         Settings {
@@ -84,21 +93,30 @@ MuseScore {
 
                 }
                 delegate: RowLayout {
-                    id: commandsColumn
+                    id: myrow
 
                     spacing: 4
 
                     TextField {
+                        id: commandField
                         placeholderText: qsTr("Commands")
                         Layout.fillWidth: true
                         text: commands
+                        selectByMouse: true
 
-                        onTextChanged: myModel.setPropertyAndUpdate(index, "commands", text, this)
+                        onTextChanged: myModel.setPropertyAndUpdate(index, "commands", text, this);
+
+                        onActiveFocusChanged: {
+                            if (activeFocus)
+                                myLoader.cause = this
+                        }
+
                     }
                     TextField {
                         Layout.fillWidth: true
                         placeholderText: qsTr("Shortcut")
                         text: shortcut
+                        selectByMouse: true
                         onTextChanged: myModel.setPropertyAndUpdate(index, "shortcut", text, this)
 
                         property var modifiers: ({ 0x02000000: "Shift", 0x04000000: "Ctrl", 0x08000000: "Alt", 0x10000000: "Meta", 0x20000000: "Keypad", 0x40000000: "GroupSwitch" })
@@ -180,12 +198,21 @@ MuseScore {
                             text: qsTr("auto")
                             checkable: true
                             checked: true
-                            tooltip: qsTr("Wheter this line tries to create shortcut with you keypresses.\nIf disabled, you will be able to enter any key sequence as plain text")
+
+                            hoverEnabled: true
+                            highlighted: hovered
+
+                            ToolTip.delay: 1000
+                            // ToolTip.timeout: 5000
+                            ToolTip.visible: hovered
+                            ToolTip.text: qsTr("Wheter this line tries to create shortcut with you keypresses.\nIf disabled, you will be able to enter any key sequence as plain text")
                         }
                     }
                     Button {
                         text: qsTr("Delete")
                         onClicked: myModel.remove(index, 1)
+                        hoverEnabled: true
+                        highlighted: hovered
                     }
                     Shortcut {
                         sequence: shortcut
@@ -202,15 +229,9 @@ MuseScore {
                     }
 
                 }
-                Component.onCompleted : {
-                    var commands = settings.commands
-                    if (commands) {
-                        myModel.fromString(commands)
-                    }
-                }
             }
             Rectangle {
-                height: 1
+                height: 2
                 Layout.fillWidth: true
                 color: "#666"
             }
@@ -222,6 +243,8 @@ MuseScore {
                         sequence: "Ctrl+N"
                         onActivated: myModel.append( { "commands": "", "shortcut": "" })
                     }
+                    hoverEnabled: true
+                    highlighted: hovered
                 }
                 Rectangle {
                     Layout.fillWidth: true
@@ -234,6 +257,8 @@ MuseScore {
                         onActivated: myModel.append( { "commands": "", "shortcut": "" })
                     }
                     onClicked: Qt.openUrlExternally("https://github.com/Marr11317/MuseScoreCmdGenerator/blob/master/All.txt");
+                    hoverEnabled: true
+                    highlighted: hovered
                 }
             }
 
@@ -244,10 +269,17 @@ MuseScore {
                 Layout.fillWidth: true
                 visible: false
 
+                color: "white"
+                wrapMode: TextEdit.Wrap
+
                 onVisibleChanged : {
                     if (!activeFocus) {
                         text = JSON.stringify(myModel.data())
                     }
+                }
+
+                background: Rectangle {
+                    color: "#555"
                 }
 
                 Connections {
@@ -278,6 +310,8 @@ MuseScore {
                         summary.visible = false
                         bottomFillRectangle.visible = true
                     }
+                    hoverEnabled: true
+                    highlighted: hovered
                 }
             }
 
@@ -324,5 +358,76 @@ MuseScore {
                 settings.commands = JSON.stringify(myModel.data())
             }
         }
+
+        Loader {
+            id: myLoader
+            property var cause
+
+            onCauseChanged: {
+                if (this.status == Loader.Ready) {
+                    this.x = myLoader.cause ? myLoader.cause.x + myLoader.cause.width : 0
+                    this.visible = myLoader.cause ? myLoader.cause.activeFocus : false
+                }
+            }
+
+            onStatusChanged: if (this.status == Loader.Ready) console.log('Loaded')
+            // asynchronous: true
+            sourceComponent: Popup {
+                id: commandsPopup
+                x: 0
+                y: 0
+                clip: true
+                bottomMargin: 10
+                topMargin: 10
+
+                visible: false
+
+                ScrollView {
+                    anchors.fill: parent
+                    ColumnLayout {
+                        anchors.fill: parent
+
+                        spacing: 4
+
+                        Repeater {
+                            model: availableCommandsModel
+                            RowLayout {
+                                Text {
+                                    // width: 10
+                                    text: aaaarea.containsMouse ? '< ' : ' <'
+                                    color: aaaarea.containsMouse ? 'red': 'black'
+                                    font.pointSize: 14
+                                    // visible: aaaarea.containsMouse
+                                }
+                                Text {
+                                    text: modelData
+                                    Layout.fillWidth: true
+                                }
+                                MouseArea {
+                                    id: aaaarea
+                                    anchors.fill: parent
+
+                                    hoverEnabled: true
+
+                                    onClicked: {
+                                        if (!myLoader.cause)
+                                            return;
+                                        var txt = myLoader.cause.text;
+                                        if (txt !== "" && txt[txt.length - 1] != ';')
+                                            txt += ';';
+
+                                        txt += modelData;
+
+                                        myLoader.cause.text = txt;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
+
 }
