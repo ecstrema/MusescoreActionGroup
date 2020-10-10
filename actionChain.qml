@@ -132,7 +132,7 @@ MuseScore {
                                 width: 2
                             }
                             color: "transparent"
-                            visible: myPlugin.activeFocusWidget === parent
+                            visible: commandsPopup.visible && myPlugin.activeFocusWidget === parent
                         }
 
                         onTextChanged: myModel.setPropertyAndUpdate(index, "commands", text, this);
@@ -140,8 +140,6 @@ MuseScore {
                         onActiveFocusChanged: {
                             if (activeFocus)
                                 myPlugin.activeFocusWidget = this
-                            // else if (myPlugin.activeFocusWidget === this)
-                            //     myPlugin.activeFocusWidget = undefined
                         }
 
                     }
@@ -154,11 +152,16 @@ MuseScore {
 
                         property bool lastWasNotModifier: false
                         function parseKeyEvent(event, released) {
-                            if (!autoShortcut.checked)
+                            if (!autoShortcut.checked || selectedText)
                                 return
 
                             if (!released && (event.key == Qt.Key_Backspace || event.key == Qt.Key_Delete) && event.modifiers == Qt.NoModifier) {
-                                text = ''
+                                if (event.key == Qt.Key_Backspace) {
+                                    const seqs = text.split(',')
+                                    text = seqs.slice(0, seqs.length - 1).join(',') // remove last
+                                }
+                                else // event.key == Qt.Key_Delete
+                                    text = ''
                                 event.accepted = true
                                 return
                             }
