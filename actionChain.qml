@@ -289,6 +289,7 @@ MuseScore {
                 }
 
                 Button {
+                    id: availableCommandsButton
                     text: qsTr("Available commands...")
                     checkable: true
                     Shortcut {
@@ -308,6 +309,7 @@ MuseScore {
                 }
                 Button {
                     text: qsTr("Generate standalone plugins")
+                    visible: summary.text === "export"
                     hoverEnabled: true
                     highlighted: hovered
                     ToolTip.delay: 1000
@@ -315,9 +317,7 @@ MuseScore {
                     ToolTip.visible: hovered
                     ToolTip.text: qsTr("Generate standalone plugins. These plugins will be available through MuseScore's plugin manager.\nNote that you will have to set the shortcuts manually from the plugin manager, as these cannot be set via plugins.")
 
-                    onClicked : {
-                        pluginsFileDialog.open()
-                    }
+                    onClicked : pluginsFileDialog.open()
                 }
                 FileIO {
                     id: fileIO
