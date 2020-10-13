@@ -42,7 +42,7 @@ MuseScore {
 
     Settings {
         id : settings
-        category : "plugin.commands1.settings"
+        category : "plugin.actionChain.settings"
 
         property alias pluginPath: pluginsFileDialog.folder
 
@@ -355,6 +355,7 @@ MuseScore {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 visible: false
+                selectByMouse: true
 
                 color: "white"
                 wrapMode: TextEdit.Wrap
@@ -452,6 +453,9 @@ MuseScore {
                         myPlugin.activeFocusWidget = item
                 }
             }
+            else {
+                availableCommandsButton.checked = false
+            }
         }
 
         ScrollView {
@@ -473,11 +477,19 @@ MuseScore {
                     text: qsTr('Click to insert into selected field')
                 }
 
-
+                TextField {
+                    id: commandsFilter
+                    Layout.fillWidth: true
+                    placeholderText: qsTr("Search…")
+                    text: shortcut
+                    selectByMouse: true
+                }
 
                 Repeater {
                     model: availableCommandsModel
                     RowLayout {
+                        id: commandInsertRowLayout
+                        visible: commandsFilter.text === "" ? true : modelData.includes(commandsFilter.text)
                         Text {
                             // width: 10
                             text: aaaarea.containsMouse ? '< ' : ' <'
