@@ -2,9 +2,11 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
+import Qt.labs.settings 1.0
+import QtQuick.Dialogs 1.2
 
 import MuseScore 3.0
-import Qt.labs.settings 1.0
+import FileIO 3.0
 
 MuseScore {
     id: myPlugin
@@ -41,6 +43,9 @@ MuseScore {
     Settings {
         id : settings
         category : "plugin.commands1.settings"
+
+        property alias pluginPath: pluginsFileDialog.folder
+
         property alias windowx: window.x
         property alias windowy: window.y
         property alias windowwidth: window.width
@@ -294,6 +299,53 @@ MuseScore {
                     onCheckedChanged: commandsPopup.visible = checked;
                     hoverEnabled: true
                     highlighted: hovered
+                }
+            }
+
+            RowLayout {
+                Rectangle {
+                    Layout.fillWidth: true
+                }
+                Button {
+                    text: qsTr("Generate standalone plugins")
+                    hoverEnabled: true
+                    highlighted: hovered
+                    ToolTip.delay: 1000
+                    // ToolTip.timeout: 5000
+                    ToolTip.visible: hovered
+                    ToolTip.text: qsTr("Generate standalone plugins. These plugins will be available through MuseScore's plugin manager.\nNote that you will have to set the shortcuts manually from the plugin manager, as these cannot be set via plugins.")
+
+                    onClicked : {
+                        pluginsFileDialog.open()
+                    }
+                }
+                FileIO {
+                    id: fileIO
+
+                    onError : console.log(msg)
+                }
+                FileDialog {
+                    id: pluginsFileDialog
+                    title: "Please choose where to save your plugins"
+                    folder: shortcuts.documents
+                    selectFolder: true
+                    onAccepted: {
+                        console.log("You chose: " + pluginsFileDialog.fileUrls)
+                        var templateStr = 'import QtQuick 2.0\nimport MuseScore 3.0\n\nMuseScore {\n    menuPath: "Plugins.$1"\n    description: "This plugin triggers the following commands in order: $2.\\n It was generated with action-chain."\n    version: "1.0"\n    onRun: {\n        curScore.startCmd()\n        str("$3").split(";").forEach(function (command) {\n            cmd(command.trim())\n        });\n        curScore.endCmd()\n    }\n}\n'
+                        for (var i = 0; i < myModel.count; ++i) {
+                            var commandsStr = myModel.get(i).commands
+                            if (commandsStr === "")
+                                continue
+                            var pluginStr = templateStr.replace("$1", commandsStr.replace(";", "->"))
+                            pluginStr = pluginStr.replace("$2", commandsStr.replace(";", ", then "))
+                            pluginStr = pluginStr.replace("$3", commandsStr)
+                            fileIO.source = pluginsFileDialog.folder.toString().slice(8) + "/" + commandsStr.replace(";", '-') + ".qml"
+                            fileIO.write(pluginStr)
+                        }
+                    }
+                    onRejected: {
+                        console.log("Canceled")
+                    }
                 }
             }
 
