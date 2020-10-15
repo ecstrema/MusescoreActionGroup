@@ -67,7 +67,7 @@ MuseScore {
         height : 400
         visible : true
         color : "#333"
-        title: qsTr("Action Chains")
+        title: qsTr("Action Chains…")
 
         ColumnLayout {
             anchors {
@@ -290,7 +290,7 @@ MuseScore {
 
                 Button {
                     id: availableCommandsButton
-                    text: qsTr("Available commands...")
+                    text: qsTr("Available commands…")
                     checkable: true
                     Shortcut {
                         sequence: "F1"
