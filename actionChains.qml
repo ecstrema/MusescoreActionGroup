@@ -42,7 +42,7 @@ MuseScore {
 
     Settings {
         id : settings
-        category : "plugin.actionChain.settings"
+        category : "plugins.actionChains.settings"
 
         property alias pluginPath: pluginsFileDialog.folder
 
@@ -56,7 +56,6 @@ MuseScore {
         property alias popupheight: commandsPopup.height
         // default sequences
         property string commands : '[{"commands":"paste;reset-groupings","shortcut":"Ctrl+Alt+Shift+V"},{"commands":"add-marcato;add-sforzato","shortcut":"|"},{"commands":"select-similar;delete","shortcut":"Ctrl+Shift+Alt+Backspace"},{"commands":"toggle-palette;inspector","shortcut":"Shift+F8"},{"commands":"","shortcut":""}]'
-
     }
 
     Window {
