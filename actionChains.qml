@@ -8,14 +8,6 @@ import QtQuick.Dialogs 1.2
 import MuseScore 3.0
 import FileIO 3.0
 
-Component.onCompleted: {
-        if (mscoreMajorVersion >= 4) {
-            title = qsTr("Action Chains…")
-            thumbnailName = "some_thumbnail.png"
-            categoryCode = "Actions"
-        }
-    }
-
 MuseScore {
     id: myPlugin
     menuPath : "Plugins.Action Chains…"
@@ -45,6 +37,11 @@ MuseScore {
         var commands = settings.commands
         if (commands) {
             myModel.fromString(commands)
+        }
+        if (mscoreMajorVersion >= 4) {
+            title = qsTr("Action Chains…")
+            thumbnailName = "some_thumbnail.png"
+            categoryCode = "Actions"
         }
     }
 
