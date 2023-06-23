@@ -40,7 +40,7 @@ MuseScore {
         }
         if (mscoreMajorVersion >= 4) {
             title = qsTr("Action Chains…")
-            thumbnailName = "some_thumbnail.png"
+            thumbnailName = "Action_Chains.png"
             categoryCode = "Actions"
         }
     }
