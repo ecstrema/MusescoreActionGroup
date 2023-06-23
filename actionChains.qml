@@ -38,6 +38,11 @@ MuseScore {
         if (commands) {
             myModel.fromString(commands)
         }
+        if (mscoreMajorVersion >= 4) {
+            title = qsTr("Action Chains…")
+            thumbnailName = "Action_Chains.png"
+            categoryCode = "Actions"
+        }
     }
 
     Settings {
